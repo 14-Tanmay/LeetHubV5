@@ -14,7 +14,7 @@ A browser extension that pushes your accepted solutions from coding platforms di
 
 ### Supported Platforms
 
-**LeetCode** , **GeeksforGeeks**, **CodeChef**
+LeetCode , GeeksforGeeks, CodeChef
 
 ## Features
 
@@ -25,7 +25,8 @@ A browser extension that pushes your accepted solutions from coding platforms di
 - 🌙 **Modern dark UI** — Glassmorphism popup with smooth animations
 - ✅ **Status indicators** — Minimalist green/red dot feedback on push
 - 📊 **Platform-specific stats** — Track Easy/Medium/Hard counts per platform
-**Note** - GFG and CodeChef track only those submissions which are pushed to the github due to API restrictions
+  
+*Note: GFG and CodeChef track only those submissions which are pushed to the github due to API restrictions.*
 
 ## Installation (Local / Unpacked)
 
@@ -66,12 +67,11 @@ This extension is designed for **local installation** as an unpacked Chrome exte
 1. After loading the extension, click the LeetHub icon in your toolbar
 2. Click **"Authenticate"** to authorize with your GitHub account
 3. Create a new private repository or link an existing one
-4. Start solving problems — your solutions will be pushed to GitHub!
+4. Start solving problems — your solutions will be pushed to GitHub on a Single Cick of Push Button visible in your Editor!
 
 ## How to Push Solutions
 
-### LeetCode
-LeetHub 5.0 fully supports LeetCode's newest UI. You can push your solutions manually:
+-### LeetCode
 
 **Pushing your most recent submission:**
 1. Solve a problem and click **Submit**.
@@ -86,8 +86,7 @@ LeetHub 5.0 fully supports LeetCode's newest UI. You can push your solutions man
 
 *Note: LeetHub enforces quality control and will actively block pushes for submissions that do not have an "Accepted" status (e.g., Compile Error, TLE).*
 
-### GeeksforGeeks
-LeetHub 5.0 injects a manual push button directly into the GeeksforGeeks IDE toolbar!
+-### GeeksforGeeks
 
 **Pushing your most recent submission:**
 1. Solve a problem and click **Submit**.
