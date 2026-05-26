@@ -1,0 +1,93 @@
+<div align="center">
+    <img src="assets/logo.png" alt="LeetHub 5.0">
+</div>
+
+<p align="center">
+  <a href="https://github.com/14-Tanmay/LeetHubV5/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"/>
+  </a>
+</p>
+
+## What is LeetHub 5.0?
+
+A browser extension that pushes your accepted solutions from coding platforms directly to your GitHub repository — with a single click or automatically.
+
+### Supported Platforms
+
+| Platform | Push Mode | Stats Tracking |
+|---|---|---|
+| **LeetCode** (`.com` & `.cn`) | Auto + Manual | ✅ Live from LeetCode API |
+| **GeeksforGeeks** | Manual (one-click) | ✅ Local tracking |
+| **CodeChef** | Manual (one-click) | ✅ Local tracking |
+
+## Features
+
+- 🚀 **One-click push** — Git logo button injected directly into each platform's UI
+- 📂 **Flexible folder structure** — Organize by difficulty, language, or flat
+- 📝 **Custom commit messages** — Use variables like `{problemName}`, `{difficulty}`, `{language}`, `{date}`
+- 🕐 **Timestamped filenames** — Preserve every submission version
+- 📊 **Platform-specific stats** — Track Easy/Medium/Hard counts per platform
+- 🌙 **Modern dark UI** — Glassmorphism popup with smooth animations
+- ✅ **Status indicators** — Minimalist green/red dot feedback on push
+
+## Installation (Local / Unpacked)
+
+This extension is designed for **local installation** as an unpacked Chrome extension. It is not published on the Chrome Web Store.
+
+### Steps
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/14-Tanmay/LeetHubV5.git
+   ```
+
+2. **Create your own GitHub OAuth app**
+
+   Go to [GitHub Developer Settings](https://github.com/settings/applications/new) and register a new OAuth application:
+   - **Application name:** LeetHub 5.0
+   - **Homepage URL:** `https://github.com/14-Tanmay/LeetHubV5`
+   - **Authorization callback URL:** `https://github.com/`
+
+3. **Add your credentials**
+
+   Update `CLIENT_ID` and `CLIENT_SECRET` in:
+   - `src/js/authorize.js`
+   - `src/js/oauth2.js`
+
+4. **Load the extension in Chrome**
+
+   - Navigate to `chrome://extensions`
+   - Enable **Developer mode** (toggle in top-right corner)
+   - Click **"Load unpacked"**
+   - Select the cloned `LeetHubV5` folder
+
+5. **You're all set!** Click the LeetHub icon in your toolbar to authenticate with GitHub and link a repository.
+
+## Setup
+
+1. After loading the extension, click the LeetHub icon in your toolbar
+2. Click **"Authenticate"** to authorize with your GitHub account
+3. Create a new private repository or link an existing one
+4. Start solving problems — your solutions will be pushed to GitHub!
+
+## Supported npm Commands
+
+```bash
+npm run               # Show available commands
+npm run setup         # Install dependencies
+npm run format        # Auto-format JavaScript, HTML/CSS
+npm run format-test   # Test if code is formatted properly
+npm run lint          # Lint JavaScript
+npm run lint-test     # Test if code is linted properly
+```
+
+## Credits
+
+Originally forked from [LeetHub 3.0](https://github.com/raphaelheinz/LeetHub-3.0) by **Raphael Heinz**, which itself was forked from [LeetHub 2.0](https://github.com/arunbhardwaj/LeetHub-2.0) by **Arun Bhardwaj**.
+
+This fork adds multi-platform support (GeeksforGeeks, CodeChef), a redesigned popup UI, platform-specific stats, and numerous quality-of-life enhancements.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

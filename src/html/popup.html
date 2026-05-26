@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/popup.css" />
+    <script src="../js/static/jquery-3.3.1.min.js"></script>
+  </head>
+
+  <body>
+    <div class="glass-container">
+      
+      <!-- Header -->
+      <div class="header-section">
+        <h1 id="title">Leet<span class="brand-accent">Hub</span> 3.0</h1>
+        <p id="caption">Sync your code seamlessly</p>
+      </div>
+      
+      <!-- Authentication mode -->
+      <div id="auth_mode" hidden>
+        <div class="collapsible-card" style="padding: 20px; text-align: center;">
+          <p style="margin-bottom: 15px;">Authenticate with GitHub to use <strong class="brand-accent">LeetHub</strong></p>
+          <button id="authenticate" class="primary-btn accent">
+            Authenticate
+          </button>
+        </div>
+      </div>
+
+      <!-- Repo Hook mode -->
+      <div id="hook_mode" hidden>
+        <div class="collapsible-card" style="padding: 20px; text-align: center;">
+          <p style="margin-bottom: 15px;">Set up a repository hook to use <strong class="brand-accent">LeetHub</strong></p>
+          <a id="hook_URL" href="" target="_blank" class="primary-btn accent">
+            Set up Hook
+          </a>
+        </div>
+      </div>
+
+      <!-- Commit mode (Main View) -->
+      <div id="commit_mode" hidden>
+        <p id="repo_url"></p>
+
+        <!-- Problem Stats Card -->
+        <div class="stats-card">
+          <div class="stats-header">
+            <h3>Problems Solved</h3>
+            <select id="platform-select" class="platform-select">
+              <option value="LeetCode">LeetCode</option>
+              <option value="GeeksforGeeks">GeeksforGeeks</option>
+              <option value="CodeChef">CodeChef</option>
+            </select>
+          </div>
+          
+          <div style="text-align: center; margin-bottom: 15px;">
+            <span id="p_solved" style="font-size: 32px; font-weight: 700; color: var(--text-main);">0</span>
+            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Total</div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label text-easy">Easy</span>
+              <span id="p_solved_easy" class="stat-value text-easy">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label text-medium">Medium</span>
+              <span id="p_solved_medium" class="stat-value text-medium">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label text-hard">Hard</span>
+              <span id="p_solved_hard" class="stat-value text-hard">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customize Commit Message -->
+        <div class="collapsible-card">
+          <div class="collapsible-header" id="collapsible-commit-message-icon">
+            <span>Customize Commit Message</span>
+            <span class="collapsible-icon">&#9654;</span>
+          </div>
+          <div id="collapsible-commit-message-container" class="collapsible-content">
+            <div class="var-tags">
+              <button class="commit-variable" id="time">Time</button>
+              <button class="commit-variable" id="space">Space</button>
+              <button class="commit-variable" id="date">Date</button>
+              <button class="commit-variable" id="problemName">Problem Name</button>
+              <button class="commit-variable" id="difficulty">Difficulty</button>
+              <button class="commit-variable" id="language">Language</button>
+              <button class="commit-variable" id="problemTopic">Topic</button>
+            </div>
+            <textarea id="custom-commit-msg" placeholder="Time: {time}, Space: {space} - LeetHub"></textarea>
+            <div class="btn-group">
+              <button class="primary-btn" id="msg-reset-btn">Reset</button>
+              <button class="primary-btn accent" id="msg-save-btn">Save</button>
+            </div>
+            <div id="success-message">Commit message saved!</div>
+          </div>
+        </div>
+
+        <!-- Use Difficulty Subfolder -->
+        <div class="collapsible-card">
+          <div class="collapsible-header" id="collapsible-difficulty-icon">
+            <span>Use Difficulty Subfolder</span>
+            <span class="collapsible-icon">&#9654;</span>
+          </div>
+          <div id="collapsible-difficulty-container" class="collapsible-content">
+            <p>Organize files into folders like <code>LeetCode/Easy/0001-two-sum/</code></p>
+            <div style="display: flex; justify-content: flex-end;">
+              <label class="toggle-switch">
+                <input type="checkbox" id="use-difficulty-folder">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Use Language Subfolder -->
+        <div class="collapsible-card">
+          <div class="collapsible-header" id="collapsible-language-icon">
+            <span>Use Language Subfolder</span>
+            <span class="collapsible-icon">&#9654;</span>
+          </div>
+          <div id="collapsible-language-container" class="collapsible-content">
+            <p>Organize files into folders like <code>LeetCode/JavaScript/Easy/0001-two-sum/</code></p>
+            <div style="display: flex; justify-content: flex-end;">
+              <label class="toggle-switch">
+                <input type="checkbox" id="use-language-folder">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timestamped Filenames -->
+        <div class="collapsible-card">
+          <div class="collapsible-header" id="collapsible-timestamp-icon">
+            <span>Timestamped Filenames</span>
+            <span class="collapsible-icon">&#9654;</span>
+          </div>
+          <div id="collapsible-timestamp-container" class="collapsible-content">
+            <p>Save submissions as <code>0001-two-sum_03-30-2025_12-30.js</code></p>
+            <div style="display: flex; justify-content: flex-end;">
+              <label class="toggle-switch">
+                <input type="checkbox" id="use-timestamp-filename">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Auto-Commit Solution Posts -->
+        <div class="collapsible-card">
+          <div class="collapsible-header" id="collapsible-solution-post-icon">
+            <span>Auto-Commit Solution Posts</span>
+            <span class="collapsible-icon">&#9654;</span>
+          </div>
+          <div id="collapsible-solution-post-container" class="collapsible-content">
+            <p>Automatically commit your solution posts to GitHub as <code>Solution.md</code> files.</p>
+            <div style="display: flex; justify-content: flex-end;">
+              <label class="toggle-switch">
+                <input type="checkbox" id="auto-commit-solution-post" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script src="../js/oauth2.js"></script>
+    <script type="text/javascript" src="../js/popup.js"></script>
+  </body>
+</html>
