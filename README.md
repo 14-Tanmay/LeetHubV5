@@ -10,15 +10,11 @@
 
 ## What is LeetHub 5.0?
 
-A browser extension that pushes your accepted solutions from coding platforms directly to your GitHub repository — with a single click or automatically.
+A browser extension that pushes your accepted solutions from coding platforms directly to your GitHub repository with a single click !
 
 ### Supported Platforms
 
-| Platform | Push Mode | Stats Tracking |
-|---|---|---|
-| **LeetCode** (`.com` & `.cn`) | Auto + Manual | ✅ Live from LeetCode API |
-| **GeeksforGeeks** | Manual (one-click) | ✅ Local tracking |
-| **CodeChef** | Manual (one-click) | ✅ Local tracking |
+**LeetCode** , **GeeksforGeeks**, **CodeChef**
 
 ## Features
 
@@ -26,9 +22,10 @@ A browser extension that pushes your accepted solutions from coding platforms di
 - 📂 **Flexible folder structure** — Organize by difficulty, language, or flat
 - 📝 **Custom commit messages** — Use variables like `{problemName}`, `{difficulty}`, `{language}`, `{date}`
 - 🕐 **Timestamped filenames** — Preserve every submission version
-- 📊 **Platform-specific stats** — Track Easy/Medium/Hard counts per platform
 - 🌙 **Modern dark UI** — Glassmorphism popup with smooth animations
 - ✅ **Status indicators** — Minimalist green/red dot feedback on push
+- 📊 **Platform-specific stats** — Track Easy/Medium/Hard counts per platform
+**Note** - GFG and CodeChef track only those submissions which are pushed to the github due to API restrictions
 
 ## Installation (Local / Unpacked)
 
