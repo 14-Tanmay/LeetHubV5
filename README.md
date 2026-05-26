@@ -71,16 +71,25 @@ This extension is designed for **local installation** as an unpacked Chrome exte
 3. Create a new private repository or link an existing one
 4. Start solving problems — your solutions will be pushed to GitHub!
 
-## Supported npm Commands
+## How to Push Solutions
 
-```bash
-npm run               # Show available commands
-npm run setup         # Install dependencies
-npm run format        # Auto-format JavaScript, HTML/CSS
-npm run format-test   # Test if code is formatted properly
-npm run lint          # Lint JavaScript
-npm run lint-test     # Test if code is linted properly
-```
+### LeetCode
+LeetHub 5.0 fully supports LeetCode's newest UI. You can push your solutions manually:
+
+**Pushing your most recent submission:**
+1. Solve a problem and click **Submit**.
+2. Once your solution is evaluated as "Accepted", simply click the **Git Push** icon located at the top right of the code editor.
+3. The icon will turn into a spinning orange dot, and then green upon successful upload!
+
+**Pushing an older submission:**
+1. Navigate to the problem you want to push.
+2. Click on the **Submissions** tab (the clock icon) on the left panel.
+3. Click on the specific **"Accepted"** submission you wish to upload.
+4. Once the submission details load in the left panel, click the **Git Push** icon above the code editor.
+
+*Note: LeetHub enforces quality control and will actively block pushes for submissions that do not have an "Accepted" status (e.g., Compile Error, TLE).*
+
+
 
 ## Credits
 

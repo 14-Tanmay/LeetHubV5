@@ -35,6 +35,21 @@ window.fetch = async function (...args) {
     try {
       const body = JSON.parse(options?.body || '{}');
       console.log('LeetHub: GraphQL operation:', body.operationName);
+
+      // Catch submissionDetails to save the last viewed submission ID
+      if (body.operationName === 'submissionDetails' && body.variables?.submissionId) {
+        const subId = body.variables.submissionId;
+        console.log('LeetHub: Viewed submission ID:', subId);
+        window.leethubLastSubmissionId = subId;
+        
+        // Save to chrome storage (via content script)
+        window.dispatchEvent(
+          new CustomEvent('leetHubSubmissionId', {
+            detail: { submissionId: subId }
+          })
+        );
+      }
+
       if (body.operationName === 'ugcArticlePublishSolution') {
         console.log('LeetHub: Solution post operation detected!');
         const solutionData = body.variables?.data;
@@ -91,6 +106,21 @@ XMLHttpRequest.prototype.send = function (data) {
     try {
       const body = JSON.parse(data || '{}');
       console.log('LeetHub: XHR GraphQL operation:', body.operationName);
+
+      // Catch submissionDetails to save the last viewed submission ID
+      if (body.operationName === 'submissionDetails' && body.variables?.submissionId) {
+        const subId = body.variables.submissionId;
+        console.log('LeetHub: Viewed submission ID via XHR:', subId);
+        window.leethubLastSubmissionId = subId;
+        
+        // Save to chrome storage (via content script)
+        window.dispatchEvent(
+          new CustomEvent('leetHubSubmissionId', {
+            detail: { submissionId: subId }
+          })
+        );
+      }
+
       if (body.operationName === 'ugcArticlePublishSolution') {
         console.log('LeetHub: Solution post operation detected via XHR!');
         const solutionData = body.variables?.data;

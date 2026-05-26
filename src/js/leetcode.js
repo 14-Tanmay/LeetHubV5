@@ -373,6 +373,13 @@ LeetCodeV2.prototype.processSubmission = async function (submissionId) {
   // Set the submissionId as a global variable so the existing init function can use it.
   window.leethubLastSubmissionId = submissionId;
 
+  // Also save it to chrome storage so it survives page reloads!
+  const problemSlug = window.location.href.match(/problems\/([^\/]+)/)?.[1];
+  if (problemSlug) {
+    chrome.storage.local.set({ [problemSlug]: submissionId });
+    console.log(`LeetHub: Saved submissionId ${submissionId} for problem ${problemSlug} to local storage`);
+  }
+
   // We no longer call loader(this) automatically. Push is triggered manually via the Push button.
 };
 
@@ -385,10 +392,26 @@ function LeetCodeV2() {
   this.injectAndListen();
 }
 LeetCodeV2.prototype.init = async function () {
-  const submissionId = window.leethubLastSubmissionId;
+  let submissionId = window.leethubLastSubmissionId;
+  
   if (!submissionId) {
-    alert('Could not find a recent submission ID. Please try submitting again.');
-    return;
+    // Try to get from url
+    const match = window.location.href.match(/\/submissions\/(\d+)/);
+    if (match) {
+      submissionId = match[1];
+    } else {
+      // Try to get from local storage saved by addUrlChangeListener
+      const problemSlug = window.location.href.match(/problems\/([^\/]+)/)?.[1];
+      if (problemSlug) {
+        const stored = await chrome.storage.local.get(problemSlug);
+        submissionId = stored[problemSlug];
+      }
+    }
+  }
+
+  if (!submissionId) {
+    alert('Could not find a recent submission ID. Please open a submission from the "Submissions" tab and try again.');
+    throw new Error('No submission ID found');
   }
   // Query for getting the solution runtime and memory stats, the code, the coding language, the question id, question title and question difficulty
   const isCN = getLeetCodeBaseUrl() === 'https://leetcode.cn';
@@ -656,15 +679,22 @@ LeetCodeV2.prototype.startSpinner = function () {
   if (!elem) {
     elem = document.createElement('span');
     elem.id = 'leethub_progress_anchor_element';
-    elem.style = 'margin-right: 20px;padding-top: 2px;';
+    elem.style = 'margin-right: 10px; display: flex; align-items: center; justify-content: center;';
   }
-  elem.innerHTML = `<div id="${this.progressSpinnerElementId}" class="${this.progressSpinnerElementClass}"></div>`;
-  this.insertToAnchorElement(elem);
+  elem.innerHTML = `<div id="${this.progressSpinnerElementId}" style="display: inline-block; height: 10px; width: 10px; border-radius: 50%; background-color: #ffa500; margin-bottom: 2px;"></div>`;
+  elem.className = ''; // Remove any LeetCode classes that might override it
+
+  let submitBtn = document.getElementById('manualGitSubmit');
+  if (submitBtn) {
+    submitBtn.prepend(elem);
+  } else {
+    this.insertToAnchorElement(elem);
+  }
   uploadState.uploading = true;
 };
 LeetCodeV2.prototype.injectSpinnerStyle = function () {
   const style = document.createElement('style');
-  style.textContent = `.${this.progressSpinnerElementClass} {pointer-events: none;width: 2.0em;height: 2.0em;border: 0.4em solid transparent;border-color: #eee;border-top-color: #3E67EC;border-radius: 50%;animation: loadingspin 1s linear infinite;} @keyframes loadingspin { 100% { transform: rotate(360deg) }}`;
+  style.textContent = `.${this.progressSpinnerElementClass} { display: inline-block; height: 10px; width: 10px; border-radius: 50%; background-color: #ffa500; margin-bottom: 2px; }`;
   document.head.append(style);
 };
 LeetCodeV2.prototype.insertToAnchorElement = function (elem) {
@@ -715,15 +745,21 @@ LeetCodeV2.prototype.addManualSubmitButton = function () {
   }
 
   var submitButton = document.createElement('button');
+  submitButton.type = 'button';
   submitButton.id = 'manualGitSubmit';
   submitButton.className =
     'relative inline-flex gap-2 items-center justify-center font-medium cursor-pointer focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-colors bg-transparent enabled:hover:bg-fill-secondary enabled:active:bg-fill-primary text-caption rounded text-text-primary group ml-auto p-1';
   submitButton.innerHTML = '';
   submitButton.appendChild(getGitIcon());
   submitButton.appendChild(getToolTip());
-  submitButton.addEventListener('click', () => loader(this));
+  submitButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    loader(this);
+  });
   submitButton.addEventListener('contextmenu', event => {
     event.preventDefault();
+    event.stopPropagation();
     const suffix = prompt(
       'Add a suffix for this solution file, i.e., -bfs, -dfs. \r\nWe don\'recommend includes special character except for "-".',
     );
@@ -782,125 +818,132 @@ chrome.storage.local.get('isSync', data => {
   }
 });
 
-const loader = (leetCode, suffix) => {
-  let iterations = 0;
+const loader = async (leetCode, suffix) => {
+  console.log('LeetHub: loader() started!');
   // start upload indicator here
   leetCode.startSpinner();
-  const intervalId = setInterval(async () => {
-    try {
-      const isSuccessfulSubmission = leetCode.getSuccessStateAndUpdate();
-      if (!isSuccessfulSubmission) {
-        iterations++;
-        if (iterations > 9) {
-          clearInterval(intervalId); // poll for max 10 attempts (10 seconds)
-          leetCode.markUploadFailed();
-        }
-        return;
+  try {
+    console.log('LeetHub: Fetching submission details via GraphQL...');
+    // For v2, query LeetCode API for submission results
+    await leetCode.init();
+    console.log('LeetHub: leetCode.init() success. Submission data:', leetCode.submissionData);
+
+    const isCN = getLeetCodeBaseUrl() === 'https://leetcode.cn';
+    if (leetCode.submissionData) {
+      if (isCN && leetCode.submissionData.statusDisplay !== 'Accepted') {
+        alert(`LeetHub: Only 'Accepted' submissions can be pushed to GitHub.\nCurrent status: ${leetCode.submissionData.statusDisplay}`);
+        throw new Error(`Submission status is ${leetCode.submissionData.statusDisplay}, not Accepted.`);
+      } else if (!isCN && leetCode.submissionData.statusCode !== 10) {
+        alert(`LeetHub: Only 'Accepted' submissions can be pushed to GitHub.\nError: Submission was not Accepted.`);
+        throw new Error(`Submission status code is ${leetCode.submissionData.statusCode}, not 10 (Accepted).`);
       }
+    }
 
-      // If successful, stop polling
-      clearInterval(intervalId);
+    const probStats = leetCode.parseStats();
+    console.log('LeetHub: probStats:', probStats);
+    if (!probStats) {
+      throw new Error('Could not get submission stats');
+    }
 
-      // For v2, query LeetCode API for submission results
-      await leetCode.init();
+    const probStatement = leetCode.parseQuestion();
+    console.log('LeetHub: probStatement length:', probStatement ? probStatement.length : 'null');
+    if (!probStatement) {
+      throw new Error('Could not find problem statement');
+    }
 
-      const probStats = leetCode.parseStats();
-      if (!probStats) {
-        throw new Error('Could not get submission stats');
-      }
+    const problemName = leetCode.getProblemNameSlug();
+    console.log('LeetHub: problemName:', problemName);
+    const alreadyCompleted = await checkAlreadyCompleted(problemName);
+    const language = leetCode.getLanguageExtension();
+    console.log('LeetHub: language:', language);
+    if (!language) {
+      throw new Error('Could not find language');
+    }
+    last_language = leetCode.getLanguage();
 
-      const probStatement = leetCode.parseQuestion();
-      if (!probStatement) {
-        throw new Error('Could not find problem statement');
-      }
+    /* Upload README */
+    const updateReadMe = await chrome.storage.local.get('stats').then(({ stats }) => {
+      const shaExists = stats?.shas?.[problemName]?.['README.md'] !== undefined;
+      console.log('LeetHub: shaExists for README:', shaExists);
 
-      const problemName = leetCode.getProblemNameSlug();
-      const alreadyCompleted = await checkAlreadyCompleted(problemName);
-      const language = leetCode.getLanguageExtension();
-      if (!language) {
-        throw new Error('Could not find language');
-      }
-      last_language = leetCode.getLanguage();
-
-      /* Upload README */
-      const updateReadMe = await chrome.storage.local.get('stats').then(({ stats }) => {
-        const shaExists = stats?.shas?.[problemName]?.['README.md'] !== undefined;
-
-        if (!shaExists) {
-          return uploadGit(
-            btoa(unescape(encodeURIComponent(probStatement))),
-            problemName,
-            'README.md',
-            `Create readme : ${problemName}`,
-            'upload',
-            false,
-          );
-        }
-      });
-
-      /* Upload Notes if any*/
-      let notes = leetCode.getNotesIfAny();
-      let updateNotes;
-      if (notes != undefined && notes.length > 0) {
-        updateNotes = uploadGit(
-          btoa(unescape(encodeURIComponent(notes))),
+      if (!shaExists) {
+        return uploadGit(
+          btoa(unescape(encodeURIComponent(probStatement))),
           problemName,
-          'NOTES.md',
-          `Attach Notes : ${problemName}`,
+          'README.md',
+          `Create readme : ${problemName}`,
           'upload',
           false,
         );
       }
+    });
 
-      const problemContext = {
-        time: `${probStats.time} (${probStats.timePercentile}%)`,
-        space: `${probStats.space} (${probStats.spacePercentile}%)`,
-        language: language,
-        problemName: problemName,
-        difficulty: difficulty,
-        date: getTodaysDate(),
-        problemTopic: probStats.problemTopic,
-      };
-      const probStatsCommitMsg = `Time: ${probStats.time} (${probStats.timePercentile}%), Space: ${probStats.space} (${probStats.spacePercentile}%) - LeetHub`; // default commit
-      const commitMsg = (await getCustomCommitMessage(problemContext)) || probStatsCommitMsg;
-
-      const { useTimestampFilename = false } =
-        await chrome.storage.local.get('useTimestampFilename');
-
-      let fileName;
-      if (useTimestampFilename) {
-        const timestamp = `${getTodaysDate()}-${getTime()}`.replace(/[:\s]/g, '--');
-        fileName = suffix
-          ? `${problemName}${suffix}-${timestamp}${language}`
-          : `${problemName}-${timestamp}${language}`;
-      } else {
-        fileName = suffix ? `${problemName}${suffix}${language}` : `${problemName}${language}`;
-      }
-
-      /* Upload code to Git */
-      const updateCode = leetCode.findAndUploadCode(problemName, fileName, commitMsg, 'upload');
-
-      /* Group problem into its relevant topics */
-      const updateRepoReadMe = updateReadmeTopicTagsWithProblem(
-        leetCode.questionDetails?.topicTags,
+    /* Upload Notes if any*/
+    let notes = leetCode.getNotesIfAny();
+    let updateNotes;
+    if (notes != undefined && notes.length > 0) {
+      console.log('LeetHub: uploading notes...');
+      updateNotes = uploadGit(
+        btoa(unescape(encodeURIComponent(notes))),
         problemName,
+        'NOTES.md',
+        `Attach Notes : ${problemName}`,
+        'upload',
+        false,
       );
-
-      await Promise.all([updateReadMe, updateNotes, updateCode, updateRepoReadMe]);
-
-      uploadState.uploading = false;
-      leetCode.markUploaded();
-
-      if (!alreadyCompleted) {
-        incrementStats();
-      }
-    } catch (err) {
-      uploadState.uploading = false;
-      leetCode.markUploadFailed();
-      clearInterval(intervalId);
-      console.log(err);
     }
-  }, 1000);
+
+    const problemContext = {
+      time: `${probStats.time} (${probStats.timePercentile}%)`,
+      space: `${probStats.space} (${probStats.spacePercentile}%)`,
+      language: language,
+      problemName: problemName,
+      difficulty: leetCode.submissionData?.question?.difficulty ?? 'Unknown',
+      date: getTodaysDate(),
+      problemTopic: probStats.problemTopic,
+    };
+    const probStatsCommitMsg = `Time: ${probStats.time} (${probStats.timePercentile}%), Space: ${probStats.space} (${probStats.spacePercentile}%) - LeetHub`; // default commit
+    const commitMsg = (await getCustomCommitMessage(problemContext)) || probStatsCommitMsg;
+    console.log('LeetHub: commitMsg:', commitMsg);
+
+    const { useTimestampFilename = false } = await chrome.storage.local.get('useTimestampFilename');
+
+    let fileName;
+    if (useTimestampFilename) {
+      const timestamp = `${getTodaysDate()}-${getTime()}`.replace(/[:\s]/g, '--');
+      fileName = suffix
+        ? `${problemName}${suffix}-${timestamp}${language}`
+        : `${problemName}-${timestamp}${language}`;
+    } else {
+      fileName = suffix ? `${problemName}${suffix}${language}` : `${problemName}${language}`;
+    }
+    console.log('LeetHub: fileName:', fileName);
+
+    /* Upload code to Git */
+    console.log('LeetHub: uploading code...');
+    const updateCode = leetCode.findAndUploadCode(problemName, fileName, commitMsg, 'upload');
+
+    /* Group problem into its relevant topics */
+    console.log('LeetHub: updating topics...');
+    const updateRepoReadMe = updateReadmeTopicTagsWithProblem(
+      leetCode.questionDetails?.topicTags,
+      problemName,
+    );
+
+    await Promise.all([updateReadMe, updateNotes, updateCode, updateRepoReadMe]);
+    console.log('LeetHub: ALL PROMISES FINISHED!');
+
+    uploadState.uploading = false;
+    leetCode.markUploaded();
+
+    if (!alreadyCompleted) {
+      incrementStats();
+    }
+  } catch (err) {
+    console.error('LEETHUB ERROR:', err);
+    uploadState.uploading = false;
+    leetCode.markUploadFailed();
+  }
 };
 
 // Use MutationObserver to determine when the submit button elements are loaded

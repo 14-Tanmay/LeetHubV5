@@ -56,7 +56,7 @@ const statusCode = (res, status, name) => {
         $('#unlink').show();
         /* Show new layout */
         document.getElementById('hook_mode').style.display = 'none';
-        document.getElementById('commit_mode').style.display = 'inherit';
+        document.getElementById('commit_mode').style.display = 'block';
       });
       /* Set Repo Hook */
       chrome.storage.local.set({ leethub_hook: res.full_name }, () => {
@@ -220,7 +220,7 @@ const linkRepo = (token, name) => {
           });
 
           /* Hide accordingly */
-          document.getElementById('hook_mode').style.display = 'inherit';
+          document.getElementById('hook_mode').style.display = 'block';
           document.getElementById('commit_mode').style.display = 'none';
         } else {
           /* Change mode type to commit */
@@ -253,7 +253,7 @@ const linkRepo = (token, name) => {
 
           /* Hide accordingly */
           document.getElementById('hook_mode').style.display = 'none';
-          document.getElementById('commit_mode').style.display = 'inherit';
+          document.getElementById('commit_mode').style.display = 'block';
         }
       }
     }
@@ -276,7 +276,7 @@ const unlinkRepo = () => {
   });
 
   /* Hide accordingly */
-  document.getElementById('hook_mode').style.display = 'inherit';
+  document.getElementById('hook_mode').style.display = 'block';
   document.getElementById('commit_mode').style.display = 'none';
 };
 
@@ -493,7 +493,7 @@ chrome.storage.local.get('mode_type', data => {
         $('#error').show();
         $('#success').hide();
         /* Hide accordingly */
-        document.getElementById('hook_mode').style.display = 'inherit';
+        document.getElementById('hook_mode').style.display = 'block';
         document.getElementById('commit_mode').style.display = 'none';
       } else {
         /* Get access to repo */
@@ -507,7 +507,7 @@ chrome.storage.local.get('mode_type', data => {
             $('#error').show();
             $('#success').hide();
             /* Hide accordingly */
-            document.getElementById('hook_mode').style.display = 'inherit';
+            document.getElementById('hook_mode').style.display = 'block';
             document.getElementById('commit_mode').style.display = 'none';
           } else {
             /* Username exists, at least in storage. Confirm this */
@@ -518,9 +518,9 @@ chrome.storage.local.get('mode_type', data => {
     });
 
     document.getElementById('hook_mode').style.display = 'none';
-    document.getElementById('commit_mode').style.display = 'inherit';
+    document.getElementById('commit_mode').style.display = 'block';
   } else {
-    document.getElementById('hook_mode').style.display = 'inherit';
+    document.getElementById('hook_mode').style.display = 'block';
     document.getElementById('commit_mode').style.display = 'none';
   }
 });

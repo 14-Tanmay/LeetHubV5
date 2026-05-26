@@ -85,8 +85,8 @@ $('#collapsible-solution-post-icon').click(function () {
   $(this).find('.collapsible-icon').toggleClass('open');
   $('#collapsible-solution-post-container').toggle();
 
-  // Load from storage: use default value 'true' if not set (default enabled)
-  chrome.storage.local.get({ autoCommitSolutionPost: true }, data => {
+  // Load from storage: use default value 'false' if not set (default disabled)
+  chrome.storage.local.get({ autoCommitSolutionPost: false }, data => {
     $('#auto-commit-solution-post').prop('checked', data.autoCommitSolutionPost);
   });
 });
