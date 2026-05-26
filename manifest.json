@@ -21,7 +21,7 @@
   "host_permissions": ["https://leetcode.com/*", "https://leetcode.cn/*"],
   "content_scripts": [
     {
-      "matches": ["https://leetcode.com/*", "https://leetcode.cn/*", "https://github.com/*"],
+      "matches": ["https://leetcode.com/*", "https://leetcode.cn/*", "https://github.com/*", "https://practice.geeksforgeeks.org/*", "https://www.geeksforgeeks.org/*", "https://www.codechef.com/*"],
       "js": ["src/js/interceptor.js"],
       "run_at": "document_start",
       "world": "MAIN"
@@ -48,7 +48,7 @@
   "web_accessible_resources": [
     {
       "resources": ["src/js/interceptor.js"],
-      "matches": ["https://leetcode.com/*", "https://leetcode.cn/*"]
+      "matches": ["https://leetcode.com/*", "https://leetcode.cn/*", "https://practice.geeksforgeeks.org/*", "https://www.geeksforgeeks.org/*", "https://www.codechef.com/*"]
     }
   ]
 }

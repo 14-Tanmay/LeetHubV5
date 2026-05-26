@@ -300,6 +300,7 @@ select:focus, input[type="text"]:focus {
   font-weight: 800;
   background: linear-gradient(to right, #fff, #bbb);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
   line-height: 1;

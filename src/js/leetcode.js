@@ -377,7 +377,9 @@ LeetCodeV2.prototype.processSubmission = async function (submissionId) {
   const problemSlug = window.location.href.match(/problems\/([^\/]+)/)?.[1];
   if (problemSlug) {
     chrome.storage.local.set({ [problemSlug]: submissionId });
-    console.log(`LeetHub: Saved submissionId ${submissionId} for problem ${problemSlug} to local storage`);
+    console.log(
+      `LeetHub: Saved submissionId ${submissionId} for problem ${problemSlug} to local storage`,
+    );
   }
 
   // We no longer call loader(this) automatically. Push is triggered manually via the Push button.
@@ -393,7 +395,7 @@ function LeetCodeV2() {
 }
 LeetCodeV2.prototype.init = async function () {
   let submissionId = window.leethubLastSubmissionId;
-  
+
   if (!submissionId) {
     // Try to get from url
     const match = window.location.href.match(/\/submissions\/(\d+)/);
@@ -410,7 +412,9 @@ LeetCodeV2.prototype.init = async function () {
   }
 
   if (!submissionId) {
-    alert('Could not find a recent submission ID. Please open a submission from the "Submissions" tab and try again.');
+    alert(
+      'Could not find a recent submission ID. Please open a submission from the "Submissions" tab and try again.',
+    );
     throw new Error('No submission ID found');
   }
   // Query for getting the solution runtime and memory stats, the code, the coding language, the question id, question title and question difficulty
@@ -752,7 +756,7 @@ LeetCodeV2.prototype.addManualSubmitButton = function () {
   submitButton.innerHTML = '';
   submitButton.appendChild(getGitIcon());
   submitButton.appendChild(getToolTip());
-  submitButton.addEventListener('click', (e) => {
+  submitButton.addEventListener('click', e => {
     e.preventDefault();
     e.stopPropagation();
     loader(this);
@@ -831,11 +835,19 @@ const loader = async (leetCode, suffix) => {
     const isCN = getLeetCodeBaseUrl() === 'https://leetcode.cn';
     if (leetCode.submissionData) {
       if (isCN && leetCode.submissionData.statusDisplay !== 'Accepted') {
-        alert(`LeetHub: Only 'Accepted' submissions can be pushed to GitHub.\nCurrent status: ${leetCode.submissionData.statusDisplay}`);
-        throw new Error(`Submission status is ${leetCode.submissionData.statusDisplay}, not Accepted.`);
+        alert(
+          `LeetHub: Only 'Accepted' submissions can be pushed to GitHub.\nCurrent status: ${leetCode.submissionData.statusDisplay}`,
+        );
+        throw new Error(
+          `Submission status is ${leetCode.submissionData.statusDisplay}, not Accepted.`,
+        );
       } else if (!isCN && leetCode.submissionData.statusCode !== 10) {
-        alert(`LeetHub: Only 'Accepted' submissions can be pushed to GitHub.\nError: Submission was not Accepted.`);
-        throw new Error(`Submission status code is ${leetCode.submissionData.statusCode}, not 10 (Accepted).`);
+        alert(
+          `LeetHub: Only 'Accepted' submissions can be pushed to GitHub.\nError: Submission was not Accepted.`,
+        );
+        throw new Error(
+          `Submission status code is ${leetCode.submissionData.statusCode}, not 10 (Accepted).`,
+        );
       }
     }
 

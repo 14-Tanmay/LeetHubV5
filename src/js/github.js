@@ -151,7 +151,7 @@ const incrementStats = () => {
       if (!stats.platformStats[basePath]) {
         stats.platformStats[basePath] = { solved: 0, easy: 0, medium: 0, hard: 0 };
       }
-      
+
       stats.platformStats[basePath].solved += 1;
       stats.platformStats[basePath].easy += difficulty === 'Easy' ? 1 : 0;
       stats.platformStats[basePath].medium += difficulty === 'Medium' ? 1 : 0;

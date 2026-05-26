@@ -4,34 +4,26 @@ let ccBasePath = 'CodeChef';
 
 function getCodeChefCode() {
   return new Promise(resolve => {
-    const script = document.createElement('script');
-    script.textContent = `
-      try {
-        let code = '';
-        if (typeof monaco !== 'undefined') {
-          const models = monaco.editor.getModels();
-          if (models && models.length > 0) {
-            code = models[0].getValue();
-          }
-        }
-        document.documentElement.setAttribute('data-cc-code', encodeURIComponent(code));
-      } catch(e) {
-        console.error('LeetHub: Failed to extract CodeChef code', e);
-      }
-    `;
-    document.body.appendChild(script);
+    const timeout = setTimeout(() => {
+      window.removeEventListener('leetHubCCCodeRes', handler);
+      const rawText = document.querySelector('.view-lines')?.innerText || '';
+      resolve(rawText);
+    }, 1000);
 
-    setTimeout(() => {
-      const encodedCode = document.documentElement.getAttribute('data-cc-code');
-      if (encodedCode) {
-        resolve(decodeURIComponent(encodedCode));
+    const handler = (e) => {
+      clearTimeout(timeout);
+      window.removeEventListener('leetHubCCCodeRes', handler);
+      const code = e.detail;
+      if (code) {
+        resolve(code);
       } else {
-        // Fallback for CodeChef
         const rawText = document.querySelector('.view-lines')?.innerText || '';
         resolve(rawText);
       }
-      script.remove();
-    }, 500);
+    };
+
+    window.addEventListener('leetHubCCCodeRes', handler);
+    window.dispatchEvent(new Event('leetHubCCCodeReq'));
   });
 }
 
@@ -133,7 +125,7 @@ function injectCodeChefPushButton() {
       const alreadyCompleted = await checkAlreadyCompleted(slug);
 
       await uploadGit(
-        code,
+        btoa(unescape(encodeURIComponent(code))),
         slug,
         fileName,
         commitMsg,

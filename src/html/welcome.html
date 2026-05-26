@@ -2,9 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="../css/welcome.css" />
     <script src="../js/static/jquery-3.3.1.min.js"></script>
   </head>
@@ -18,16 +21,16 @@
       </div>
 
       <!-- Messages -->
-      <div id="error" class="alert-badge" style="display: none;"></div>
-      <div id="success" class="alert-badge" style="display: none;"></div>
-      <div id="unlink" class="alert-badge" style="display: none;">
+      <div id="error" class="alert-badge" style="display: none"></div>
+      <div id="success" class="alert-badge" style="display: none"></div>
+      <div id="unlink" class="alert-badge" style="display: none">
         Linked the wrong repo? <a>Unlink</a>
       </div>
 
       <!-- Create Hook Mode -->
-      <div id="hook_mode" class="glass-card" style="display: none;">
+      <div id="hook_mode" class="glass-card" style="display: none">
         <h2>To get started with LeetHub</h2>
-        
+
         <div class="form-group">
           <select id="type">
             <option value="">Pick an Option</option>
@@ -35,9 +38,15 @@
             <option value="link">Link an Existing Repository</option>
           </select>
 
-          <input autocomplete="off" id="name" placeholder="Repository Name" type="text" style="display: none;" />
-          
-          <select id="existing_repo" style="display: none;">
+          <input
+            autocomplete="off"
+            id="name"
+            placeholder="Repository Name"
+            type="text"
+            style="display: none"
+          />
+
+          <select id="existing_repo" style="display: none">
             <option value="">Select a Repository</option>
             <!-- Repositories will be populated here -->
           </select>
@@ -47,11 +56,11 @@
       </div>
 
       <!-- Commit Mode (Stats) -->
-      <div id="commit_mode" class="glass-card" style="display: none;">
+      <div id="commit_mode" class="glass-card" style="display: none">
         <div class="stats-container">
           <div class="stats-total-header">Problems Solved</div>
           <span id="p_solved">0</span>
-          
+
           <div class="stats-grid">
             <div class="stat-item">
               <span class="stat-label text-easy">Easy</span>
@@ -74,7 +83,8 @@
       <!-- Footer Link -->
       <div class="footer-link">
         <a target="_blank" href="https://github.com/14-Tanmay/LeetHubV5">
-          Star <span style="color: white; font-weight: 600;">Leet</span><span class="brand-accent" style="font-weight: 800;">Hub</span> on GitHub
+          Star <span style="color: white; font-weight: 600">Leet</span
+          ><span class="brand-accent" style="font-weight: 800">Hub</span> on GitHub
         </a>
       </div>
     </div>

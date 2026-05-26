@@ -89,7 +89,26 @@ LeetHub 5.0 fully supports LeetCode's newest UI. You can push your solutions man
 
 *Note: LeetHub enforces quality control and will actively block pushes for submissions that do not have an "Accepted" status (e.g., Compile Error, TLE).*
 
+### GeeksforGeeks
+LeetHub 5.0 injects a manual push button directly into the GeeksforGeeks IDE toolbar!
 
+**Pushing your most recent submission:**
+1. Solve a problem and click **Submit**.
+2. Once the problem is solved successfully, click the **Git Push** icon located next to the language selector above the editor.
+3. The icon will turn into an orange dot, and then green upon successful upload!
+
+**Pushing an older submission:**
+1. Navigate to the problem you want to push.
+2. Click on the **Submissions** tab.
+3. Find an older "Correct" submission and click **View**.
+4. In the code preview modal, click the **Move To Editor** button to load the code into the main editor.
+5. Click the **Git Push** icon. You will receive a confirmation prompt asking to verify it is an accepted solution—simply click **OK** to push!
+
+**Multiple Solution Versions:**
+You can maintain multiple versions of a solution for the same problem.
+- **Right-click** the Git Push icon.
+- Enter a suffix (e.g. `-bfs`, `-dfs`) when prompted.
+- The file will be saved with the suffix appended to the name!
 
 ## Credits
 

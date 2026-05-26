@@ -21,8 +21,8 @@ window.fetch = async function (...args) {
         console.log('LeetHub: Submission ID detected', data.submission_id);
         window.dispatchEvent(
           new CustomEvent('leetHubSubmissionId', {
-            detail: { submissionId: data.submission_id }
-          })
+            detail: { submissionId: data.submission_id },
+          }),
         );
       }
     } catch (e) {
@@ -41,12 +41,12 @@ window.fetch = async function (...args) {
         const subId = body.variables.submissionId;
         console.log('LeetHub: Viewed submission ID:', subId);
         window.leethubLastSubmissionId = subId;
-        
+
         // Save to chrome storage (via content script)
         window.dispatchEvent(
           new CustomEvent('leetHubSubmissionId', {
-            detail: { submissionId: subId }
-          })
+            detail: { submissionId: subId },
+          }),
         );
       }
 
@@ -97,10 +97,7 @@ XMLHttpRequest.prototype.open = function (method, url, ...args) {
 };
 
 XMLHttpRequest.prototype.send = function (data) {
-  if (
-    this._leethub_url?.includes('/graphql/') &&
-    this._leethub_method === 'POST'
-  ) {
+  if (this._leethub_url?.includes('/graphql/') && this._leethub_method === 'POST') {
     console.log('LeetHub: GraphQL POST detected via XHR');
 
     try {
@@ -112,12 +109,12 @@ XMLHttpRequest.prototype.send = function (data) {
         const subId = body.variables.submissionId;
         console.log('LeetHub: Viewed submission ID via XHR:', subId);
         window.leethubLastSubmissionId = subId;
-        
+
         // Save to chrome storage (via content script)
         window.dispatchEvent(
           new CustomEvent('leetHubSubmissionId', {
-            detail: { submissionId: subId }
-          })
+            detail: { submissionId: subId },
+          }),
         );
       }
 
@@ -157,3 +154,33 @@ XMLHttpRequest.prototype.send = function (data) {
 };
 
 console.log('LeetHub: Request interceptors installed in page context');
+
+window.addEventListener('leetHubGFGCodeReq', () => {
+  let code = '';
+  try {
+    if (typeof ace !== 'undefined') {
+      const editor = ace.edit(document.querySelector('.ace_editor'));
+      code = editor.getValue();
+    } else if (window.editor) {
+      code = window.editor.getValue();
+    }
+  } catch(e) {
+    console.error('LeetHub interceptor: Failed to extract GFG code', e);
+  }
+  window.dispatchEvent(new CustomEvent('leetHubGFGCodeRes', { detail: code }));
+});
+
+window.addEventListener('leetHubCCCodeReq', () => {
+  let code = '';
+  try {
+    if (typeof monaco !== 'undefined') {
+      const models = monaco.editor.getModels();
+      if (models && models.length > 0) {
+        code = models[0].getValue();
+      }
+    }
+  } catch(e) {
+    console.error('LeetHub interceptor: Failed to extract CC code', e);
+  }
+  window.dispatchEvent(new CustomEvent('leetHubCCCodeRes', { detail: code }));
+});
